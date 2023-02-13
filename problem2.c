@@ -122,3 +122,22 @@ void dijkstra(int n, double **cost, int sourcenode, int print_steps){
     dijsktra_compute(n, cost, sourcenode, visited, distance, via, print_steps);
     dijkstra_display(n, sourcenode, distance, via);
 }
+
+
+void main(){
+    int n = 6;
+    double** cost = define2darray(n);
+    double cost_given[6][6] = {{0.0, 1.5, INFINITY, INFINITY, INFINITY, 0.7},
+                               {INFINITY, 0.0, 1.1, INFINITY, INFINITY, INFINITY},
+                               {INFINITY, INFINITY, 0.0, INFINITY, 3.0, INFINITY},
+                               {INFINITY, 2.3, 4.5, 0.0, INFINITY, INFINITY},
+                               {INFINITY, INFINITY, INFINITY, INFINITY, 0.0, INFINITY},
+                               {INFINITY, INFINITY, INFINITY, INFINITY, 6.5, 0.0}};
+    
+    for(int i = 0; i<n; i++){
+        for(int j = 0; j<n; j++){
+            cost[i][j] = cost_given[i][j];
+        }
+    }
+    dijkstra(n, cost, 0, 1);
+}
