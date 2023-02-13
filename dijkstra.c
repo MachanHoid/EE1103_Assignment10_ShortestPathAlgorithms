@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-//this file is to implement djikstra's algorithm
 double** define2darray(int n){
   double **array;
   array = malloc (sizeof (double *) * n);
@@ -12,14 +11,16 @@ double** define2darray(int n){
   return array;
 }
 
-int min_index(int n, double * array){
-    int mini = 0;
-    for(int i = 1; i<n; i++){
-        if (array[i] < array[mini]){
-            mini = i;
-        }
+void display1darray_double(int n, double* array){
+    for(int i = 0; i<n; i++){
+        printf(" %lf |", array[i]);
     }
-    return mini;
+}
+
+void display1darray_int(int n, int* array){
+    for(int i = 0; i<n; i++){
+        printf(" %d,", array[i]);
+    }
 }
 
 int in_intArray(int n, int k, int* array){
@@ -33,28 +34,64 @@ int in_intArray(int n, int k, int* array){
     return flag;
 }
 
+int next_min_index(int n, double * array, int* visited){
+    int minindex;
+    double minivalue = INFINITY;
+    for(int i = 0; i<n; i++){
+        if ( (in_intArray(n, i, visited) == 0) && (array[i] < minivalue)){
+            minindex = i;
+            minivalue = array[i];
+        }
+    }
+    if(minivalue == INFINITY){
+        for(int i = 0; i<n; i++){
+            if (in_intArray(n, i, visited) == 0){
+            minindex = i;
+            }
+        }
+    }
+    return minindex;
+}
+
 //note: we are numbering nodes from 0 to n-1. same will be followed in cost matrix as well.
-void dijsktra_compute(int n, double **cost, int sourcenode, int* visited, double *distance, int* via){
+void dijsktra_compute(int n, double **cost, int sourcenode, int* visited, double *distance, int* via, int print_steps){
     //initialisation
     for(int i = 0; i <n; i++){
+        visited[i] = -1;
         distance[i] = INFINITY;
+        via[i] = -1;
     }
     //first step
     distance[sourcenode] = 0;
-    
 
+    //printing out
+    if(print_steps ==1){
+        printf("i |     Visited Array       |                      Distances                     \n");
+        printf("%d |", 0);
+        display1darray_int(n, visited);
+        printf(" |");
+        display1darray_double(n, distance);
+        printf("\n");
+    }
     //iterations
     for(int j = 0; j<n; j++){
-        int k = min_index(n, &distance);
+        int k = next_min_index(n, distance, visited); 
         visited[j] = k;
         for(int i = 0; i < n; i++){
-            if(in_intArray(n, i, &visited) == 0){
+            if(in_intArray(n, i, visited) == 0){
                 if(distance[k] + cost[k][i] < distance[i]){
                     distance[i] = distance[k] + cost[k][i];
                     via[i] = k;
                 }
             }
         }
+        if(print_steps ==1){
+            printf("%d |", j+1);
+            display1darray_int(n, visited);
+            printf(" |");
+            display1darray_double(n, distance);
+            printf("\n");
+    }
     }
 }
 
@@ -66,17 +103,23 @@ void dijkstra_display(int n, int sourcenode, double *distance, int* via){
         int p = i;
         while(p != sourcenode){
             p = via[p];
-            printf("<-- %d ", p);
+            if(p<0){
+                printf("<-- No path is available.");
+                break;
+            }else{
+                printf("<-- %d ", p);
+            }
         }
         printf("\n\n");
     }
 }
 
-void dijkstra(int n, double **cost, int sourcenode){
+void dijkstra(int n, double **cost, int sourcenode, int print_steps){
     int* visited = malloc(sizeof(int) * n);
     double* distance = malloc(sizeof (double) * n);
     int* via = malloc(sizeof(int) * n);
-    dijsktra_compute(n, cost, sourcenode, visited, distance, via);
+
+    dijsktra_compute(n, cost, sourcenode, visited, distance, via, print_steps);
     dijkstra_display(n, sourcenode, distance, via);
 }
 
@@ -96,5 +139,5 @@ void main(){
             cost[i][j] = cost_given[i][j];
         }
     }
-    dijkstra(n, cost, 0);
+    dijkstra(n, cost, 0, 1);
 }
