@@ -204,9 +204,15 @@ void main(){
             cost[i][j] = cost_given[i][j];
         }
     }
-    printf("\nUsing Dijkstra Algorithm:\n\n");
+    printf("\nUsing Dijkstra Algorithm from node 0:\n\n");
     dijkstra(n, cost, 0, 1);
 
-    printf("\nUsing Bellman-Ford Algorithm:\n\n");
+    printf("\nUsing Bellman-Ford Algorithm from node 0:\n\n");
     bellmanford(n, cost, 0, 1);
+
+    printf("\nUsing Dijkstra Algorithm from node 3:\n\n");
+    dijkstra(n, cost, 3, 1);
+
+    printf("\nUsing Bellman-Ford Algorithm from node 3:\n\n");
+    bellmanford(n, cost, 3, 1);
 }
